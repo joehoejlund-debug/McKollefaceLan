@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McKollefaceLan Shop</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="screen">
+    <div class="login-container">
+      <h1 class="logo">McKollefaceLan</h1>
+      <p class="subtitle">LAN Party Shop</p>
+      <form id="login-form">
+        <input type="text" id="name-input" placeholder="Enter your name" required autocomplete="off" maxlength="30">
+        <button type="submit" class="primary-btn">Enter Shop</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- App Screen -->
+  <div id="app-screen" class="screen" hidden>
+    <header>
+      <div class="header-left">
+        <h1 class="logo">McKollefaceLan</h1>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-tab="shop">Shop</button>
+        <button class="nav-btn" data-tab="my-orders">My Orders</button>
+        <button class="nav-btn" data-tab="all-orders">All Orders</button>
+      </nav>
+      <div class="header-right">
+        <span id="user-name"></span>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Shop Tab -->
+      <div id="tab-shop" class="tab-content">
+        <div class="menu-grid">
+          <div class="menu-card" data-item="toast">
+            <div class="item-emoji">&#127838;</div>
+            <h3>Toast</h3>
+            <div class="quantity-control">
+              <button class="qty-btn" data-action="decrease">&minus;</button>
+              <span class="qty-value">0</span>
+              <button class="qty-btn" data-action="increase">+</button>
+            </div>
+          </div>
+          <div class="menu-card" data-item="soda">
+            <div class="item-emoji">&#129380;</div>
+            <h3>Soda</h3>
+            <div class="quantity-control">
+              <button class="qty-btn" data-action="decrease">&minus;</button>
+              <span class="qty-value">0</span>
+              <button class="qty-btn" data-action="increase">+</button>
+            </div>
+          </div>
+          <div class="menu-card" data-item="water">
+            <div class="item-emoji">&#128167;</div>
+            <h3>Water</h3>
+            <div class="quantity-control">
+              <button class="qty-btn" data-action="decrease">&minus;</button>
+              <span class="qty-value">0</span>
+              <button class="qty-btn" data-action="increase">+</button>
+            </div>
+          </div>
+        </div>
+        <button id="place-order-btn" class="primary-btn order-btn" disabled>Place Order</button>
+      </div>
+
+      <!-- My Orders Tab -->
+      <div id="tab-my-orders" class="tab-content" hidden>
+        <div id="my-orders-list" class="orders-list">
+          <p class="empty-message">No orders yet</p>
+        </div>
+      </div>
+
+      <!-- All Orders Tab -->
+      <div id="tab-all-orders" class="tab-content" hidden>
+        <div id="all-orders-list" class="orders-list">
+          <p class="empty-message">No orders yet</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Notification popup -->
+  <div id="notification" class="notification" hidden></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
