@@ -39,8 +39,8 @@ export default async (req: Request, context: Context) => {
       )
     }
 
-    // Validate items
-    const validItems = ['toast', 'cola', 'fanta', 'xray']
+    // Validate items — fanta kept as legacy alias for existing orders
+    const validItems = ['toast', 'cola', 'colazero', 'tuborgsport', 'tuborgsquash', 'fanta', 'xray']
     const validToppings = ['Veggie pålæg', 'Hamburgerryg', 'Ketchup', 'Sennep', 'Mayo', 'Remoulade', 'Oregano', 'Ost', 'Cornichonner']
     for (const item of items) {
       if (!validItems.includes(item.name) || typeof item.quantity !== 'number' || item.quantity < 1) {
@@ -97,7 +97,8 @@ export default async (req: Request, context: Context) => {
       return Response.json({ error: 'Order id and items are required' }, { status: 400 })
     }
 
-    const validItems = ['toast', 'cola', 'fanta', 'xray']
+    // Validate items — fanta kept as legacy alias for existing orders
+    const validItems = ['toast', 'cola', 'colazero', 'tuborgsport', 'tuborgsquash', 'fanta', 'xray']
     const validToppings = ['Veggie pålæg', 'Hamburgerryg', 'Ketchup', 'Sennep', 'Mayo', 'Remoulade', 'Oregano', 'Ost', 'Cornichonner']
     for (const item of items) {
       if (!validItems.includes(item.name) || typeof item.quantity !== 'number' || item.quantity < 1) {
