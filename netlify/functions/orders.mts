@@ -40,13 +40,23 @@ export default async (req: Request, context: Context) => {
     }
 
     // Validate items
-    const validItems = ['toast', 'cola', 'fanta']
+    const validItems = ['toast', 'cola', 'fanta', 'xray']
+    const validToppings = ['Veggie pålæg', 'Hamburgerryg', 'Ketchup', 'Sennep', 'Mayo', 'Remoulade', 'Oregano', 'Ost', 'Cornichonner']
     for (const item of items) {
       if (!validItems.includes(item.name) || typeof item.quantity !== 'number' || item.quantity < 1) {
         return Response.json(
           { error: 'Invalid item: ' + item.name },
           { status: 400 }
         )
+      }
+      // Validate toppings for toast
+      if (item.name === 'toast' && item.toppings) {
+        if (!Array.isArray(item.toppings) || !item.toppings.every((t: string) => validToppings.includes(t))) {
+          return Response.json(
+            { error: 'Invalid toppings' },
+            { status: 400 }
+          )
+        }
       }
     }
 
@@ -87,10 +97,16 @@ export default async (req: Request, context: Context) => {
       return Response.json({ error: 'Order id and items are required' }, { status: 400 })
     }
 
-    const validItems = ['toast', 'cola', 'fanta']
+    const validItems = ['toast', 'cola', 'fanta', 'xray']
+    const validToppings = ['Veggie pålæg', 'Hamburgerryg', 'Ketchup', 'Sennep', 'Mayo', 'Remoulade', 'Oregano', 'Ost', 'Cornichonner']
     for (const item of items) {
       if (!validItems.includes(item.name) || typeof item.quantity !== 'number' || item.quantity < 1) {
         return Response.json({ error: 'Invalid item: ' + item.name }, { status: 400 })
+      }
+      if (item.name === 'toast' && item.toppings) {
+        if (!Array.isArray(item.toppings) || !item.toppings.every((t: string) => validToppings.includes(t))) {
+          return Response.json({ error: 'Invalid toppings' }, { status: 400 })
+        }
       }
     }
 
