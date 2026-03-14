@@ -1,10 +1,13 @@
 (function () {
   // State
   let currentUser = localStorage.getItem('mckollefacelan-user');
-  const quantities = { toast: 0, cola: 0, fanta: 0, xray: 0 };
+  const quantities = { toast: 0, cola: 0, colazero: 0, tuborgsport: 0, tuborgsquash: 0, xray: 0 };
   const itemIcons = {
     toast: '\u{1F35E}',
     cola: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#d32f2f"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34" text-anchor="middle" font-size="9" font-weight="bold" font-family="Georgia,serif" fill="#d32f2f" font-style="italic">CC</text></svg>',
+    colazero: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#111"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34" text-anchor="middle" font-size="7" font-weight="bold" font-family="Georgia,serif" fill="#111" font-style="italic">Zero</text></svg>',
+    tuborgsport: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#0288d1"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial,sans-serif" fill="#0288d1">Sport</text></svg>',
+    tuborgsquash: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#f57c00"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial,sans-serif" fill="#f57c00">Squash</text></svg>',
     fanta: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#f57c00"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial,sans-serif" fill="#f57c00">F</text></svg>',
     xray: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#0288d1"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="9" font-weight="bold" font-family="Arial,sans-serif" fill="#0288d1">X-Ray</text></svg>'
   };
@@ -305,12 +308,14 @@
     var existing = document.getElementById('edit-modal');
     if (existing) existing.remove();
 
-    var validItems = ['toast', 'cola', 'fanta', 'xray'];
+    var validItems = ['toast', 'cola', 'colazero', 'tuborgsport', 'tuborgsquash', 'xray'];
     var editQty = {};
     var editToppings = [];
     validItems.forEach(function (name) { editQty[name] = 0; });
     order.items.forEach(function (item) {
-      editQty[item.name] = item.quantity;
+      if (validItems.includes(item.name)) {
+        editQty[item.name] = item.quantity;
+      }
       if (item.name === 'toast' && item.toppings) {
         editToppings = item.toppings.slice();
       }
@@ -326,43 +331,43 @@
           var icon = itemIcons[name] || '';
           var toppingsHtml = '';
           if (name === 'toast') {
-            toppingsHtml = '<div class="edit-toppings" style="' + (editQty.toast > 0 ? '' : 'display:none;') + 'padding:0.5rem 0;">' +
+            toppingsHtml = '<div class="edit-toppings" style="' + (editQty.toast > 0 ? '' : 'display:none') + '">' +
               allToppings.map(function (t) {
-                var checked = editToppings.indexOf(t) >= 0 ? ' checked' : '';
+                var checked = editToppings.includes(t) ? ' checked' : '';
                 return '<label class="topping-option"><input type="checkbox" value="' + escapeHtml(t) + '"' + checked + '> ' + escapeHtml(t) + '</label>';
               }).join('') +
             '</div>';
           }
-          return '<div class="edit-row" data-item="' + name + '">' +
-            '<span>' + icon + ' ' + capitalize(name) + '</span>' +
+          return '<div class="edit-item-row">' +
+            '<span class="edit-item-label">' + icon + ' ' + capitalize(name) + '</span>' +
             '<div class="quantity-control">' +
-              '<button class="qty-btn edit-qty-btn" data-action="decrease">&minus;</button>' +
-              '<span class="qty-value">' + editQty[name] + '</span>' +
-              '<button class="qty-btn edit-qty-btn" data-action="increase">+</button>' +
+              '<button class="qty-btn edit-qty-btn" data-item="' + name + '" data-action="decrease">&minus;</button>' +
+              '<span class="qty-value" id="edit-qty-' + name + '">' + editQty[name] + '</span>' +
+              '<button class="qty-btn edit-qty-btn" data-item="' + name + '" data-action="increase">+</button>' +
             '</div>' +
-          '</div>' + toppingsHtml;
+            toppingsHtml +
+          '</div>';
         }).join('') +
-        '<div class="modal-buttons">' +
-          '<button class="primary-btn" id="save-edit-btn">Save</button>' +
-          '<button class="secondary-btn" id="cancel-edit-btn">Cancel</button>' +
+        '<div class="modal-actions">' +
+          '<button id="save-edit-btn" class="primary-btn">Save</button>' +
+          '<button id="cancel-edit-btn" class="secondary-btn">Cancel</button>' +
         '</div>' +
       '</div>';
+
     document.body.appendChild(modal);
 
     var editToppingsDiv = modal.querySelector('.edit-toppings');
 
     modal.querySelectorAll('.edit-qty-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var row = btn.closest('.edit-row');
-        var item = row.dataset.item;
-        var display = row.querySelector('.qty-value');
-        if (btn.dataset.action === 'increase') {
+        var item = btn.dataset.item;
+        var action = btn.dataset.action;
+        if (action === 'increase') {
           editQty[item]++;
-        } else if (editQty[item] > 0) {
+        } else if (action === 'decrease' && editQty[item] > 0) {
           editQty[item]--;
         }
-        display.textContent = editQty[item];
-        // Show/hide toppings for toast
+        document.getElementById('edit-qty-' + item).textContent = editQty[item];
         if (item === 'toast' && editToppingsDiv) {
           editToppingsDiv.style.display = editQty.toast > 0 ? '' : 'none';
         }
@@ -429,6 +434,10 @@
 
   function capitalize(str) {
     if (str === 'xray') return 'X-Ray';
+    if (str === 'colazero') return 'Cola Zero';
+    if (str === 'tuborgsport') return 'Tuborg Sport';
+    if (str === 'tuborgsquash') return 'Tuborg Squash';
+    if (str === 'fanta') return 'Tuborg Squash'; // legacy alias for existing orders
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
@@ -453,26 +462,17 @@
   var chatSetupDone = false;
 
   function setupChat() {
-    // Don't show chat widget for Kitchen user
-    if (currentUser === 'Kitchen') {
-      chatWidget.hidden = true;
-      return;
-    }
-    chatWidget.hidden = false;
-    lastSeenCount = 0;
-
-    if (chatSetupDone) {
-      loadChatMessages();
-      return;
-    }
+    if (chatSetupDone) return;
     chatSetupDone = true;
+
+    chatWidget.hidden = false;
 
     chatToggle.addEventListener('click', function () {
       chatOpen = !chatOpen;
       chatPanel.hidden = !chatOpen;
       if (chatOpen) {
-        loadChatMessages();
         chatUnread.hidden = true;
+        loadChatMessages();
         chatInput.focus();
       }
     });
@@ -487,55 +487,50 @@
       if (e.key === 'Enter') sendChatMessage();
     });
 
-    // Poll for new messages
     chatPollTimer = setInterval(function () {
       loadChatMessages();
-    }, 4000);
+    }, 5000);
 
     loadChatMessages();
   }
 
   async function loadChatMessages() {
     try {
-      var res = await fetch('/api/chat?type=dm&user=' + encodeURIComponent(currentUser));
+      var res = await fetch('/api/chat?type=dm&from=' + encodeURIComponent(currentUser) + '&to=Kitchen');
       var messages = await res.json();
-      renderChatMessages(messages);
 
-      // Unread badge when panel closed
-      if (!chatOpen && messages.length > lastSeenCount) {
-        var newCount = messages.length - lastSeenCount;
-        chatUnread.textContent = newCount > 9 ? '9+' : newCount;
+      if (messages.length > lastSeenCount && !chatOpen) {
         chatUnread.hidden = false;
+        chatUnread.textContent = messages.length - lastSeenCount;
       }
       if (chatOpen) {
         lastSeenCount = messages.length;
-        chatUnread.hidden = true;
+      }
+
+      if (!chatOpen) return;
+
+      if (!messages || messages.length === 0) {
+        chatMessages.innerHTML = '<p class="empty-message" style="padding:1rem;font-size:0.85rem;">No messages yet. Say hi to the kitchen!</p>';
+        return;
+      }
+
+      var wasAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 20;
+
+      chatMessages.innerHTML = messages.map(function (msg) {
+        var isSent = msg.from === currentUser;
+        var cls = isSent ? 'sent' : 'received';
+        var time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return '<div class="chat-msg ' + cls + '">' +
+          '<div>' + escapeHtml(msg.message) + '</div>' +
+          '<div class="chat-msg-meta">' + time + '</div>' +
+        '</div>';
+      }).join('');
+
+      if (wasAtBottom || chatOpen) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
       }
     } catch (err) {
-      // silent fail on poll
-    }
-  }
-
-  function renderChatMessages(messages) {
-    if (!messages || messages.length === 0) {
-      chatMessages.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;font-size:0.85rem;">No messages yet. Say hi to the kitchen!</p>';
-      return;
-    }
-
-    var wasAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 20;
-
-    chatMessages.innerHTML = messages.map(function (msg) {
-      var isSent = msg.from === currentUser;
-      var cls = isSent ? 'sent' : 'received';
-      var time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return '<div class="chat-msg ' + cls + '">' +
-        '<div>' + escapeHtml(msg.message) + '</div>' +
-        '<div class="chat-msg-meta">' + time + '</div>' +
-      '</div>';
-    }).join('');
-
-    if (wasAtBottom || chatOpen) {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      // silent
     }
   }
 
