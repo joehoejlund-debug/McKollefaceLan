@@ -216,10 +216,19 @@ main {
   box-shadow: 0 0 24px rgba(233, 69, 96, 0.15);
 }
 
-.item-emoji {
+.item-emoji,
+.item-icon {
   font-size: 3.5rem;
   margin-bottom: 0.8rem;
   line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-icon svg {
+  width: 64px;
+  height: 64px;
 }
 
 .menu-card h3 {
@@ -377,4 +386,135 @@ main {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ===== Delete & Edit Buttons ===== */
+.delete-order-btn,
+.edit-order-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.delete-order-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.edit-order-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* ===== Done Button ===== */
+.done-order-btn {
+  background: transparent;
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.done-order-btn:hover {
+  background: var(--success);
+  color: #0f0f1a;
+}
+
+/* ===== Done Order State ===== */
+.order-card.order-done {
+  opacity: 0.55;
+  border-color: var(--success);
+}
+
+.done-badge {
+  background: var(--success);
+  color: #0f0f1a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Edit Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.edit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.05rem;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons .primary-btn,
+.modal-buttons .secondary-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.secondary-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
 }
