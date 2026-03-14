@@ -2,6 +2,9 @@
   var itemIcons = {
     toast: '\u{1F35E}',
     cola: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#d32f2f"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34" text-anchor="middle" font-size="9" font-weight="bold" font-family="Georgia,serif" fill="#d32f2f" font-style="italic">CC</text></svg>',
+    colazero: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#111"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34" text-anchor="middle" font-size="7" font-weight="bold" font-family="Georgia,serif" fill="#111" font-style="italic">Zero</text></svg>',
+    tuborgsport: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#0288d1"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial,sans-serif" fill="#0288d1">Sport</text></svg>',
+    tuborgsquash: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#f57c00"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial,sans-serif" fill="#f57c00">Squash</text></svg>',
     fanta: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#f57c00"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial,sans-serif" fill="#f57c00">F</text></svg>',
     xray: '<svg viewBox="0 0 64 64" width="20" height="20" style="vertical-align:middle"><rect x="18" y="8" width="28" height="48" rx="4" fill="#0288d1"/><rect x="20" y="24" width="24" height="14" rx="2" fill="#fff" opacity=".95"/><text x="32" y="34.5" text-anchor="middle" font-size="9" font-weight="bold" font-family="Arial,sans-serif" fill="#0288d1">X-Ray</text></svg>'
   };
@@ -13,6 +16,10 @@
 
   function capitalize(str) {
     if (str === 'xray') return 'X-Ray';
+    if (str === 'colazero') return 'Cola Zero';
+    if (str === 'tuborgsport') return 'Tuborg Sport';
+    if (str === 'tuborgsquash') return 'Tuborg Squash';
+    if (str === 'fanta') return 'Tuborg Squash'; // legacy alias for existing orders
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
@@ -178,33 +185,21 @@
         msgCountBadge.textContent = diff > 9 ? '9+' : diff;
         msgCountBadge.hidden = false;
       }
-      if (currentTab === 'messages') {
-        prevTotalMsgs = total;
-      }
+      prevTotalMsgs = total;
 
       if (users.length === 0) {
         convoList.innerHTML = '<p class="empty-message" style="padding:2rem;font-size:0.9rem;">No messages yet</p>';
         return;
       }
 
-      // Sort users by latest message time (most recent first)
-      users.sort(function (a, b) {
-        var lastA = conversations[a][conversations[a].length - 1];
-        var lastB = conversations[b][conversations[b].length - 1];
-        return new Date(lastB.timestamp).getTime() - new Date(lastA.timestamp).getTime();
-      });
-
       convoList.innerHTML = users.map(function (user) {
         var msgs = conversations[user];
         var last = msgs[msgs.length - 1];
-        var preview = last.message.length > 40 ? last.message.slice(0, 40) + '...' : last.message;
-        var time = timeAgo(last.timestamp);
-        var fromLabel = last.from === 'Kitchen' ? 'You: ' : '';
-        var activeCls = activeConvo === user ? ' active' : '';
-        return '<div class="messenger-convo-item' + activeCls + '" data-user="' + escapeHtml(user) + '">' +
-          '<div class="messenger-convo-name">' + escapeHtml(user) + ' <span class="messenger-convo-count">' + msgs.length + '</span></div>' +
-          '<div class="messenger-convo-preview">' + fromLabel + escapeHtml(preview) + '</div>' +
-          '<div class="messenger-convo-time">' + time + '</div>' +
+        var preview = last ? escapeHtml(last.message).slice(0, 40) : '';
+        var isActive = activeConvo === user;
+        return '<div class="messenger-convo-item' + (isActive ? ' active' : '') + '" data-user="' + escapeHtml(user) + '">' +
+          '<div class="messenger-convo-name">' + escapeHtml(user) + '</div>' +
+          '<div class="messenger-convo-preview">' + preview + '</div>' +
         '</div>';
       }).join('');
 
@@ -213,8 +208,12 @@
           openConversation(el.dataset.user);
         });
       });
+
+      if (activeConvo) {
+        loadMessages(activeConvo);
+      }
     } catch (err) {
-      convoList.innerHTML = '<p class="empty-message" style="padding:1rem;">Failed to load conversations</p>';
+      // silent
     }
   }
 
@@ -223,55 +222,43 @@
     messengerChatName.textContent = user;
     messengerInputBar.hidden = false;
     messengerBack.hidden = false;
-
-    // Hide sidebar on mobile
     messengerSidebar.classList.add('hidden-mobile');
-
-    // Mark active in sidebar
     convoList.querySelectorAll('.messenger-convo-item').forEach(function (el) {
       el.classList.toggle('active', el.dataset.user === user);
     });
-
-    loadConvoMessages(user);
-    messengerInput.focus();
+    loadMessages(user);
   }
 
-  async function loadConvoMessages(user) {
+  async function loadMessages(user) {
     try {
-      var res = await fetch('/api/chat?type=dm&user=' + encodeURIComponent(user));
-      var messages = await res.json();
+      var res = await fetch('/api/chat?type=dm-all');
+      var conversations = await res.json();
+      var messages = conversations[user] || [];
 
-      if (!messages || messages.length === 0) {
-        messengerMessages.innerHTML = '<p class="empty-message" style="padding:3rem;font-size:0.9rem;">No messages</p>';
+      if (messages.length === 0) {
+        messengerMessages.innerHTML = '<p class="empty-message" style="padding:2rem;font-size:0.9rem;">No messages yet</p>';
         return;
       }
-
-      var wasAtBottom = messengerMessages.scrollTop + messengerMessages.clientHeight >= messengerMessages.scrollHeight - 30;
 
       messengerMessages.innerHTML = messages.map(function (msg) {
         var isSent = msg.from === 'Kitchen';
         var cls = isSent ? 'sent' : 'received';
         var time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        var senderLabel = isSent ? '' : '<div class="chat-msg-sender">' + escapeHtml(msg.from) + '</div>';
         return '<div class="chat-msg ' + cls + '">' +
-          senderLabel +
           '<div>' + escapeHtml(msg.message) + '</div>' +
-          '<div class="chat-msg-meta">' + time + '</div>' +
+          '<div class="chat-msg-meta">' + (isSent ? 'Kitchen' : msg.from) + ' · ' + time + '</div>' +
         '</div>';
       }).join('');
 
-      if (wasAtBottom) {
-        messengerMessages.scrollTop = messengerMessages.scrollHeight;
-      }
+      messengerMessages.scrollTop = messengerMessages.scrollHeight;
     } catch (err) {
-      messengerMessages.innerHTML = '<p class="empty-message" style="padding:1rem;">Failed to load messages</p>';
+      // silent
     }
   }
 
   async function sendReply() {
-    if (!activeConvo) return;
     var text = messengerInput.value.trim();
-    if (!text) return;
+    if (!text || !activeConvo) return;
 
     messengerInput.value = '';
     messengerSend.disabled = true;
@@ -287,8 +274,7 @@
           message: text,
         }),
       });
-      await loadConvoMessages(activeConvo);
-      messengerMessages.scrollTop = messengerMessages.scrollHeight;
+      loadMessages(activeConvo);
     } catch (err) {
       // silent
     }
@@ -297,13 +283,5 @@
     messengerInput.focus();
   }
 
-  // Poll
-  setInterval(function () {
-    if (activeConvo) {
-      loadConvoMessages(activeConvo);
-    }
-    loadConversations();
-  }, 4000);
-
-  loadConversations();
+  setInterval(loadConversations, POLL_INTERVAL);
 })();
