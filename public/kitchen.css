@@ -13,6 +13,11 @@
   font-size: 1.3rem;
 }
 
+.kitchen-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .kitchen-label {
   font-size: 1.1rem;
   color: var(--text-secondary);
@@ -30,10 +35,27 @@
   font-weight: 600;
 }
 
+.tab-badge {
+  background: rgba(255,255,255,0.2);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-left: 0.3rem;
+}
+
+.nav-btn.active .tab-badge {
+  background: rgba(255,255,255,0.25);
+}
+
 .kitchen-main {
   padding: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.kitchen-main[hidden] {
+  display: none !important;
 }
 
 .kitchen-orders {
@@ -98,7 +120,198 @@
   font-size: 1.05rem;
 }
 
-@media (max-width: 600px) {
+.kitchen-card-footer {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+.kitchen-done-btn {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--success);
+  background: transparent;
+  color: var(--success);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.kitchen-done-btn:hover {
+  background: var(--success);
+  color: #0f0f1a;
+}
+
+.kitchen-item-toppings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-top: 0.3rem;
+  padding-left: 0.2rem;
+}
+
+/* ===== Messenger Layout ===== */
+.messenger-layout {
+  display: flex;
+  height: calc(100vh - 80px);
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.messenger-sidebar {
+  width: 300px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.messenger-sidebar-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.messenger-sidebar-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.messenger-convo-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.messenger-convo-item {
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.messenger-convo-item:hover {
+  background: var(--bg-card);
+}
+
+.messenger-convo-item.active {
+  background: var(--bg-card);
+  border-left: 3px solid var(--accent);
+}
+
+.messenger-convo-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.messenger-convo-count {
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.messenger-convo-preview {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messenger-convo-time {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  margin-top: 0.2rem;
+}
+
+/* Chat area */
+.messenger-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.messenger-chat-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.messenger-back-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.messenger-back-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.messenger-back-btn[hidden] {
+  display: none;
+}
+
+.messenger-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.messenger-input-bar {
+  display: flex;
+  padding: 0.8rem 1rem;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.messenger-input-bar[hidden] {
+  display: none !important;
+}
+
+.messenger-input-bar input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.messenger-input-bar input:focus {
+  border-color: var(--accent);
+}
+
+@media (max-width: 700px) {
   .kitchen-header {
     flex-direction: column;
     gap: 0.5rem;
@@ -107,5 +320,28 @@
 
   .kitchen-orders {
     grid-template-columns: 1fr;
+  }
+
+  .messenger-layout {
+    height: calc(100vh - 120px);
+    border-radius: 0;
+  }
+
+  .messenger-sidebar {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  .messenger-sidebar.hidden-mobile {
+    display: none;
+  }
+
+  .messenger-layout {
+    position: relative;
   }
 }

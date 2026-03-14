@@ -10,13 +10,49 @@
 <body>
   <header class="kitchen-header">
     <h1 class="logo">McKollefaceLan</h1>
-    <span class="kitchen-label">Kitchen Orders</span>
-    <span id="order-count" class="order-count">0 orders</span>
+    <nav class="kitchen-nav">
+      <button class="nav-btn active" data-tab="orders">Orders <span id="order-count-badge" class="tab-badge">0</span></button>
+      <button class="nav-btn" data-tab="messages">Messages <span id="msg-count-badge" class="tab-badge" hidden></span></button>
+    </nav>
+    <div style="display:flex;align-items:center;gap:0.8rem;">
+      <span id="order-count" class="order-count">0 orders</span>
+      <a href="/" class="nav-btn nav-link" style="font-size:0.8rem;text-decoration:none;">Back to Shop</a>
+    </div>
   </header>
 
-  <main class="kitchen-main">
+  <!-- Orders Tab -->
+  <main id="tab-orders" class="kitchen-main">
     <div id="orders-container" class="kitchen-orders">
       <p class="empty-message">No orders yet</p>
+    </div>
+  </main>
+
+  <!-- Messages Tab (Full Messenger Layout) -->
+  <main id="tab-messages" class="kitchen-main" hidden>
+    <div class="messenger-layout">
+      <!-- Conversation List -->
+      <div class="messenger-sidebar" id="messenger-sidebar">
+        <div class="messenger-sidebar-header">
+          <h3>Conversations</h3>
+        </div>
+        <div id="messenger-convo-list" class="messenger-convo-list">
+          <p class="empty-message" style="padding:2rem;font-size:0.9rem;">No messages yet</p>
+        </div>
+      </div>
+      <!-- Chat Area -->
+      <div class="messenger-chat" id="messenger-chat">
+        <div class="messenger-chat-header" id="messenger-chat-header">
+          <button id="messenger-back" class="messenger-back-btn" hidden>&larr;</button>
+          <span id="messenger-chat-name">Select a conversation</span>
+        </div>
+        <div id="messenger-messages" class="messenger-messages">
+          <p class="empty-message" style="padding:3rem;font-size:0.9rem;">Select a conversation to view messages</p>
+        </div>
+        <div id="messenger-input-bar" class="messenger-input-bar" hidden>
+          <input type="text" id="messenger-input" placeholder="Type a reply..." autocomplete="off" maxlength="500">
+          <button id="messenger-send" class="chat-send-btn">Send</button>
+        </div>
+      </div>
     </div>
   </main>
 
